@@ -1,0 +1,50 @@
+import sys
+from PyQt5.QtWidgets import QApplication, QGraphicsView, QGraphicsScene, QGraphicsRectItem, QVBoxLayout, QWidget
+from PyQt5.QtCore import Qt
+
+
+class DiagramScene(QGraphicsScene):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+    def mousePressEvent(self, event):
+        rect = QGraphicsRectItem(event.scenePos().x(), event.scenePos().y(), 100, 50)
+        rect.setFlags(QGraphicsItem.ItemIsMovable | QGraphicsItem.ItemIsSelectable)
+        self.addItem(rect)
+
+
+class DiagramWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        self.initUI()
+
+    def initUI(self):
+        self.setWindowTitle('Diagram Scene Example')
+        self.setGeometry(100, 100, 600, 400)
+
+        # Create the diagram scene
+        self.diagramScene = DiagramScene()
+
+        # Create a view to visualize the scene
+        self.view = QGraphicsView()
+        self.view.setScene(self.diagramScene)
+
+        # Set the view to be interactively scalable and draggable
+        self.view.setRenderHint(QPainter.Antialiasing)
+        self.view.setDragMode(QGraphicsView.RubberBandDrag)
+        self.view.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
+
+        # Create a layout to hold the view
+        layout = QVBoxLayout()
+        layout.addWidget(self.view)
+
+        # Set the layout for the main window
+        self.setLayout(layout)
+
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    window = DiagramWindow()
+    window.show()
+    sys.exit(app.exec_())
